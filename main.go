@@ -7,7 +7,7 @@ import (
 	routes "restio/routes"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/v2"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 var foodCollection *mongo.Collection = database.OpenCollection(database.Client, "food")
