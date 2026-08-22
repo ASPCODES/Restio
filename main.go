@@ -1,22 +1,29 @@
 package main
 
 import (
+	"log"
 	"os"
 	"restio/database"
 	middleware "restio/middleware"
 	routes "restio/routes"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 var foodCollection *mongo.Collection = database.OpenCollection(database.Client, "food")
 
 func main()  {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		port = "8080"
+		log.Fatal("PORT not set in .env file")
 	}
 
 	router := gin.New()
