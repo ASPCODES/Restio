@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"restio/database"
+	"restio/models"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -38,8 +39,18 @@ func GetMenus() gin.HandlerFunc {
 
 
 func GetMenu() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		menuId := c.Param("menu_id")
+		var menu models.Menu
 
+		err := foodCollection.FindOne(ctx, bson.M{"menu_id":menuId}).Decode(&menu)
+		defer cancel()
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		c.JSON(http.StatusOK, menu)
 	}
 }
 
